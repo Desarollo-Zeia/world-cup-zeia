@@ -22,20 +22,22 @@ export default function AdminLogin() {
 
   return (
     <div className="min-h-[60vh] flex items-center justify-center px-4">
-      <div className="bg-white rounded-2xl border-2 border-[#1a5f2a] p-8 w-full max-w-md shadow-[0_6px_0_rgba(0,0,0,0.08)]">
-        <div className="text-center mb-6">
-          <div className="w-16 h-16 mx-auto rounded-full bg-[#1a5f2a] flex items-center justify-center text-white font-display text-3xl border-2 border-[#ffd700] mb-4">
-            🔒
+      <div className="surface p-8 w-full max-w-md animate-fade-in-up">
+        <div className="text-center mb-8">
+          <div className="w-14 h-14 mx-auto rounded-2xl bg-slate-900 flex items-center justify-center text-white mb-5">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
           </div>
-          <h1 className="font-display text-3xl text-[#1a1a1a]">Acceso de administrador</h1>
-          <p className="text-[#4a4539] mt-2">
+          <h1 className="font-display text-2xl font-bold text-slate-900">Acceso de administrador</h1>
+          <p className="text-slate-500 text-sm mt-2">
             Ingresa la contraseña para registrar predicciones.
           </p>
         </div>
 
         <form action={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="password" className="block font-display uppercase tracking-wide text-[#4a4539] mb-2">
+            <label htmlFor="password" className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
               Contraseña
             </label>
             <input
@@ -43,12 +45,13 @@ export default function AdminLogin() {
               name="password"
               type="password"
               required
-              className="w-full h-12 px-4 bg-[#f7f3e8] border-2 border-[#efe9d8] rounded-lg focus:border-[#1a5f2a] focus:outline-none text-[#1a1a1a]"
+              className="w-full form-input"
+              placeholder="••••••••"
             />
           </div>
 
           {error && (
-            <div className="p-3 bg-[#d93025]/10 border border-[#d93025]/30 text-[#d93025] rounded-lg text-sm">
+            <div className="p-3 bg-red-50 border border-red-100 text-danger rounded-lg text-sm">
               {error}
             </div>
           )}
@@ -56,7 +59,7 @@ export default function AdminLogin() {
           <button
             type="submit"
             disabled={pending}
-            className="w-full btn-primary h-12 text-lg disabled:opacity-60"
+            className="w-full btn-primary h-11 disabled:opacity-60"
           >
             {pending ? 'Entrando...' : 'Entrar'}
           </button>

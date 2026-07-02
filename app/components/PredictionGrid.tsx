@@ -51,26 +51,14 @@ function predictedWinnerLabel(
 
 function StatusBadge({ points, hasResult }: { points: number; hasResult: boolean }) {
   if (!hasResult) {
-    return (
-      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-display uppercase tracking-wide bg-[#efe9d8] text-[#4a4539]">
-        Pendiente
-      </span>
-    )
+    return <span className="badge badge-pending">Pendiente</span>
   }
 
   if (points > 0) {
-    return (
-      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-display uppercase tracking-wide bg-[#1a5f2a] text-white">
-        +{points} pt
-      </span>
-    )
+    return <span className="badge badge-hit">+{points} pt</span>
   }
 
-  return (
-    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-display uppercase tracking-wide bg-[#d93025] text-white">
-      Falló
-    </span>
-  )
+  return <span className="badge badge-miss">Falló</span>
 }
 
 function TeamBox({
@@ -89,12 +77,12 @@ function TeamBox({
 
   return (
     <div
-      className={`flex-1 flex flex-col items-center justify-center gap-2 rounded-xl border-2 p-4 ${
+      className={`flex-1 flex flex-col items-center justify-center gap-2 rounded-xl border p-4 ${
         isActual
-          ? 'border-[#1a5f2a] bg-[#1a5f2a]/10'
+          ? 'border-accent bg-accent-light/50'
           : isPredicted
-          ? 'border-[#d4af37] bg-[#ffd700]/15'
-          : 'border-[#efe9d8] bg-white'
+          ? 'border-slate-900 bg-slate-100'
+          : 'border-slate-200 bg-white'
       }`}
     >
       {flag ? (
@@ -103,14 +91,14 @@ function TeamBox({
           alt={name}
           width={48}
           height={32}
-          className="object-cover rounded-md w-14 h-9 shadow-sm"
+          className="object-cover rounded-md w-12 h-8 shadow-sm"
         />
       ) : (
-        <div className="w-14 h-9 rounded-md bg-[#f7f3e8] border-2 border-dashed border-[#efe9d8]" />
+        <div className="w-12 h-8 rounded-md bg-slate-100 border border-dashed border-slate-300" />
       )}
       <span
-        className={`text-sm font-semibold text-center leading-tight ${
-          isActual ? 'text-[#1a5f2a]' : isPredicted ? 'text-[#1a1a1a]' : 'text-[#4a4539]'
+        className={`text-xs sm:text-sm font-semibold text-center leading-tight ${
+          isActual ? 'text-accent-dark' : isPredicted ? 'text-slate-900' : 'text-slate-500'
         }`}
       >
         {name}
@@ -130,7 +118,7 @@ export default function PredictionGrid({
 
   return (
     <div className="grid gap-4 md:grid-cols-2">
-      {sorted.map((pred) => {
+      {sorted.map((pred, index) => {
         const match = pred.match
         const hasResult = match.winner !== null
         const actualWinner = match.winner
@@ -139,10 +127,11 @@ export default function PredictionGrid({
         return (
           <div
             key={pred.id}
-            className="bg-white rounded-2xl border-2 border-[#efe9d8] p-5 shadow-[0_3px_0_rgba(0,0,0,0.05)]"
+            className="surface p-5 animate-fade-in-up"
+            style={{ animationDelay: `${Math.min(index * 0.05, 0.3)}s` }}
           >
-            <div className="flex items-center justify-between text-sm text-[#4a4539] mb-3">
-              <span className="font-display uppercase tracking-wide">{STAGE_LABELS[match.stage] || match.stage}</span>
+            <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-slate-500 mb-4">
+              <span>{STAGE_LABELS[match.stage] || match.stage}</span>
               <span>{formatDate(match.utcDate)}</span>
             </div>
 
@@ -153,7 +142,7 @@ export default function PredictionGrid({
                 isPredicted={predictedWinner === 'HOME'}
                 isActual={actualWinner === 'HOME'}
               />
-              <span className="text-[#4a4539] font-display text-lg">VS</span>
+              <span className="text-slate-400 font-display font-bold text-sm">VS</span>
               <TeamBox
                 team={match.awayTeam}
                 placeholder={match.placeholderB}
@@ -162,25 +151,24 @@ export default function PredictionGrid({
               />
             </div>
 
-            <div className="mt-4 text-center">
-              <p className="text-[#4a4539]">
-                Predicción:{' '}
-                <span className="font-semibold text-[#1a1a1a]">
+            <div className="mt-4 flex items-center justify-between">
+              <div className="text-sm">
+                <span className="text-slate-500">Predicción:</span>{' '}
+                <span className="font-semibold text-slate-900">
                   {predictedWinnerLabel(match, predictedWinner)}
                 </span>
-              </p>
-              {hasResult && (
-                <p className="text-sm text-[#4a4539] mt-1">
-                  Resultado real:{' '}
-                  <span className="font-semibold text-[#1a5f2a]">{winnerLabel(match)}</span>
-                  {' '}({match.homeScore} - {match.awayScore})
-                </p>
-              )}
-            </div>
-
-            <div className="mt-4 flex justify-center">
+              </div>
               <StatusBadge points={pred.pointsEarned} hasResult={hasResult} />
             </div>
+
+            {hasResult && (
+              <div className="mt-3 pt-3 border-t border-slate-100 text-sm text-slate-500">
+                Resultado:{' '}
+                <span className="font-semibold text-slate-900">
+                  {winnerLabel(match)} ({match.homeScore} - {match.awayScore})
+                </span>
+              </div>
+            )}
           </div>
         )
       })}

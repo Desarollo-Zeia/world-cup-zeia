@@ -3,12 +3,18 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
+const navItems = [
+  { href: '/', label: 'Ranking' },
+  { href: '/bracket', label: 'Bracket' },
+  { href: '/admin', label: 'Admin' },
+]
+
 export default function AppHeader({ isAdmin = false }: { isAdmin?: boolean }) {
   return (
-    <header className="bg-white border-b-4 border-[#1a5f2a] sticky top-0 z-50 shadow-sm">
-      <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-3">
-          <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-[#ffd700]">
+    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="relative w-9 h-9 rounded-full overflow-hidden ring-2 ring-slate-200 group-hover:ring-accent transition-colors">
             <Image
               src="/kiara.jpeg"
               alt="Kiara"
@@ -17,34 +23,33 @@ export default function AppHeader({ isAdmin = false }: { isAdmin?: boolean }) {
               priority
             />
           </div>
-          <span className="font-display text-2xl text-[#1a1a1a] tracking-wide">
-            MUNDIAL ZEIA
-          </span>
+          <div className="flex flex-col leading-none">
+            <span className="font-display text-xl font-semibold tracking-tight text-slate-900">
+              Mundial Zeia
+            </span>
+            <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-500">
+              Quiniela 2026
+            </span>
+          </div>
         </Link>
 
-        <nav className="flex items-center gap-2 text-sm">
-          <Link
-            href="/"
-            className="px-4 py-2 rounded-lg font-display uppercase tracking-wide text-[#4a4539] hover:bg-[#f7f3e8] hover:text-[#1a5f2a] transition-colors"
-          >
-            Ranking
-          </Link>
-          <Link
-            href="/bracket"
-            className="px-4 py-2 rounded-lg font-display uppercase tracking-wide text-[#4a4539] hover:bg-[#f7f3e8] hover:text-[#1a5f2a] transition-colors"
-          >
-            Bracket
-          </Link>
-          <Link
-            href="/admin"
-            className={`px-4 py-2 rounded-lg font-display uppercase tracking-wide transition-colors ${
-              isAdmin
-                ? 'bg-[#1a5f2a] text-white'
-                : 'text-[#4a4539] hover:bg-[#f7f3e8] hover:text-[#1a5f2a]'
-            }`}
-          >
-            Admin
-          </Link>
+        <nav className="flex items-center gap-1">
+          {navItems.map((item) => {
+            const isActive = item.href === '/admin' ? isAdmin : undefined
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
+                  isActive
+                    ? 'bg-accent text-white'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                {item.label}
+              </Link>
+            )
+          })}
         </nav>
       </div>
     </header>

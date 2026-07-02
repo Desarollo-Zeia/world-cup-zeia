@@ -5,6 +5,17 @@ import RankingTable from '@/app/components/RankingTable'
 
 export const dynamic = 'force-dynamic'
 
+function buildForm(predictions: { pointsEarned: number; match: { winner: string | null; utcDate: Date } }[]) {
+  const sorted = [...predictions].sort(
+    (a, b) => new Date(a.match.utcDate).getTime() - new Date(b.match.utcDate).getTime()
+  )
+
+  return sorted.slice(-5).map((p) => {
+    if (p.match.winner === null) return 'pending'
+    return p.pointsEarned > 0 ? 'hit' : 'miss'
+  })
+}
+
 export default async function HomePage() {
   try {
     await syncMatches()
@@ -14,7 +25,11 @@ export default async function HomePage() {
 
   const users = await prisma.user.findMany({
     include: {
-      predictions: true,
+      predictions: {
+        include: {
+          match: true,
+        },
+      },
     },
   })
 
@@ -25,21 +40,21 @@ export default async function HomePage() {
       imageUrl: u.imageUrl,
       points: u.predictions.reduce((sum, p) => sum + p.pointsEarned, 0),
       winners: u.predictions.filter((p) => p.pointsEarned >= 1).length,
+      form: buildForm(u.predictions),
     }))
     .sort((a, b) => b.points - a.points || b.winners - a.winners)
 
   return (
-    <div className="min-h-screen bg-[#f7f3e8]">
+    <div className="min-h-screen bg-slate-50">
       <AppHeader />
 
-      <main className="max-w-2xl mx-auto px-4 py-8 pb-28">
-        <div className="text-center mb-8">
-          <div className="inline-block bg-[#1a5f2a] text-white px-4 py-1 rounded-full text-sm font-display uppercase tracking-wider mb-3">
-            Mundial 2026
-          </div>
-          <h1 className="font-display text-5xl text-[#1a1a1a] mb-2">Así van las predicciones</h1>
-          <p className="text-[#4a4539] text-lg">
-            Tabla de posiciones de tus compañeros
+      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12 pb-28">
+        <div className="mb-8 sm:mb-10">
+          <h1 className="font-display text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
+            Así van las predicciones
+          </h1>
+          <p className="text-slate-500 mt-2">
+            Tabla de posiciones de tus compañeros · Mundial 2026
           </p>
         </div>
 

@@ -1,209 +1,260 @@
 @import "tailwindcss";
 
 :root {
-  --paper: #f7f3e8;
-  --paper-dark: #efe9d8;
-  --ink: #1a1a1a;
-  --ink-soft: #4a4539;
-  --green: #1a5f2a;
-  --green-light: #2d8a3e;
-  --gold: #ffd700;
-  --gold-dark: #d4af37;
-  --red: #d93025;
-  --blue: #1e40af;
-  --white: #ffffff;
+  --background: #f3f4f6;
+  --foreground: #111827;
+  --muted: #6b7280;
+  --muted-bg: #f9fafb;
+  --border: #e5e7eb;
+  --border-strong: #d1d5db;
+  --card: #ffffff;
+  --accent: #16a34a;
+  --accent-dark: #15803d;
+  --accent-light: #dcfce7;
+  --danger: #dc2626;
+  --danger-light: #fee2e2;
+  --warning: #ca8a04;
+  --warning-light: #fef9c3;
 }
 
 @theme inline {
-  --color-background: var(--paper);
-  --color-foreground: var(--ink);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-bg: var(--muted-bg);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-card: var(--card);
+  --color-accent: var(--accent);
+  --color-accent-dark: var(--accent-dark);
+  --color-accent-light: var(--accent-light);
+  --color-danger: var(--danger);
+  --color-danger-light: var(--danger-light);
+  --color-warning: var(--warning);
+  --color-warning-light: var(--warning-light);
   --font-sans: var(--font-body);
   --font-display: var(--font-display);
 }
 
 body {
-  background-color: var(--paper);
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
   background-image:
-    radial-gradient(circle at 20% 10%, rgba(255, 215, 0, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 80% 90%, rgba(26, 95, 42, 0.06) 0%, transparent 40%),
-    linear-gradient(180deg, rgba(0,0,0,0.02) 1px, transparent 1px);
-  background-size: 100% 100%, 100% 100%, 100% 24px;
-  color: var(--ink);
-  font-family: var(--font-body), Georgia, serif;
+    radial-gradient(circle at 90% 0%, rgba(22, 163, 74, 0.04) 0%, transparent 35%),
+    radial-gradient(circle at 0% 100%, rgba(21, 128, 61, 0.03) 0%, transparent 40%);
 }
 
 .font-display {
-  font-family: var(--font-display), Impact, sans-serif;
-  letter-spacing: 0.02em;
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.02em;
 }
 
 .font-body {
-  font-family: var(--font-body), Georgia, serif;
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
 }
 
-/* Sticker card effect */
-.sticker-card {
-  background: var(--white);
-  border: 3px solid var(--gold-dark);
-  border-radius: 12px;
-  box-shadow:
-    0 4px 0 rgba(0,0,0,0.08),
-    0 8px 24px rgba(0,0,0,0.06);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+/* Card surface */
+.surface {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
-.sticker-card:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    0 6px 0 rgba(0,0,0,0.08),
-    0 12px 32px rgba(0,0,0,0.1);
+/* Standings table row */
+.standings-row {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr 5rem 5rem;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid var(--border);
+  transition: background-color 0.15s ease;
 }
 
-/* Dashed ticket border */
-.ticket-border {
-  border: 2px dashed var(--gold-dark);
-  border-radius: 8px;
+@media (min-width: 640px) {
+  .standings-row {
+    grid-template-columns: 3rem 1fr 6rem 6rem;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+  }
 }
 
-/* Field stripe pattern */
-.field-stripes {
-  background: repeating-linear-gradient(
-    90deg,
-    var(--green) 0px,
-    var(--green) 40px,
-    var(--green-light) 40px,
-    var(--green-light) 80px
-  );
+.standings-row:last-child {
+  border-bottom: none;
 }
 
-/* Number badge */
-.number-badge {
-  background: var(--gold);
-  color: var(--ink);
-  border: 2px solid var(--gold-dark);
-  border-radius: 50%;
-  font-family: var(--font-display), Impact, sans-serif;
+.standings-row:hover {
+  background-color: var(--muted-bg);
 }
 
-/* Button primary */
+/* Form dots */
+.form-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+}
+
+.form-dot.hit {
+  background-color: var(--accent);
+}
+
+.form-dot.miss {
+  background-color: var(--danger);
+}
+
+.form-dot.pending {
+  background-color: var(--border-strong);
+}
+
+/* Buttons */
 .btn-primary {
-  background: var(--green);
-  color: var(--white);
-  border: none;
-  border-radius: 8px;
-  font-family: var(--font-display), Impact, sans-serif;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  box-shadow: 0 4px 0 #0f3a1a;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--accent);
+  color: white;
+  font-weight: 600;
+  border-radius: 0.75rem;
+  padding: 0.625rem 1.25rem;
   transition: all 0.15s ease;
 }
 
-.btn-primary:hover {
-  transform: translateY(1px);
-  box-shadow: 0 3px 0 #0f3a1a;
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--accent-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
 }
 
-.btn-primary:active {
-  transform: translateY(4px);
-  box-shadow: 0 0 0 #0f3a1a;
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
 }
 
-/* Button secondary */
 .btn-secondary {
-  background: var(--gold);
-  color: var(--ink);
-  border: none;
-  border-radius: 8px;
-  font-family: var(--font-display), Impact, sans-serif;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  box-shadow: 0 4px 0 var(--gold-dark);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  font-weight: 600;
+  border-radius: 0.75rem;
+  padding: 0.625rem 1.25rem;
   transition: all 0.15s ease;
 }
 
-.btn-secondary:hover {
-  transform: translateY(1px);
-  box-shadow: 0 3px 0 var(--gold-dark);
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--muted-bg);
+  border-color: var(--border-strong);
 }
 
-/* Input fields */
+/* Inputs */
 .form-input {
-  background: var(--white);
-  border: 2px solid var(--paper-dark);
-  border-radius: 8px;
-  color: var(--ink);
-  font-family: var(--font-body), Georgia, serif;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background-color: white;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 0.625rem 0.875rem;
+  color: var(--foreground);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .form-input:focus {
   outline: none;
-  border-color: var(--green);
-  box-shadow: 0 0 0 3px rgba(26, 95, 42, 0.1);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12);
 }
 
-/* Team selection buttons in admin */
+/* Team option cards */
 .team-option {
-  background: var(--white);
-  border: 2px solid var(--paper-dark);
-  border-radius: 12px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
   transition: all 0.15s ease;
 }
 
 .team-option:hover:not(:disabled) {
-  border-color: var(--green);
-  transform: translateY(-1px);
+  border-color: var(--border-strong);
+  background-color: var(--muted-bg);
 }
 
 .team-option.selected {
-  border-color: var(--green);
-  background: rgba(26, 95, 42, 0.08);
-  box-shadow: 0 0 0 3px rgba(26, 95, 42, 0.15);
+  border-color: var(--accent);
+  background-color: var(--accent-light);
+  box-shadow: 0 0 0 1px var(--accent);
 }
 
-.team-option.draw {
-  background: var(--paper-dark);
-  border-style: dashed;
+/* Badge pills */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
 }
 
-.team-option.draw.selected {
-  background: rgba(255, 215, 0, 0.2);
-  border-color: var(--gold-dark);
-  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.25);
-}
-
-/* Status badges */
 .badge-hit {
-  background: var(--green);
-  color: var(--white);
+  background-color: var(--accent-light);
+  color: var(--accent-dark);
 }
 
 .badge-miss {
-  background: var(--red);
-  color: var(--white);
+  background-color: var(--danger-light);
+  color: var(--danger);
 }
 
 .badge-pending {
-  background: var(--paper-dark);
-  color: var(--ink-soft);
+  background-color: var(--muted-bg);
+  color: var(--muted);
+}
+
+/* Status bar for top positions */
+.rank-bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0.25rem;
+  border-top-left-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+}
+
+.rank-bar.gold {
+  background: linear-gradient(180deg, #facc15, #eab308);
+}
+
+.rank-bar.silver {
+  background: linear-gradient(180deg, #cbd5e1, #94a3b8);
+}
+
+.rank-bar.bronze {
+  background: linear-gradient(180deg, #fdba74, #f97316);
+}
+
+.rank-bar.qualified {
+  background-color: var(--accent);
 }
 
 /* Animations */
-@keyframes stamp {
-  0% { transform: scale(1.5); opacity: 0; }
-  50% { transform: scale(0.95); opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.animate-stamp {
-  animation: stamp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out forwards;
 }
 
-@keyframes slideUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-.animate-slide-up {
-  animation: slideUp 0.5s ease-out forwards;
-}
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.1s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.2s; }
+.stagger-5 { animation-delay: 0.25s; }

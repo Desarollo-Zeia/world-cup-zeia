@@ -84,11 +84,11 @@ function TeamOption({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`team-option flex-1 flex flex-col items-center justify-center gap-2 p-4 ${
+      className={`team-option flex-1 flex flex-col items-center justify-center gap-2 p-3 ${
         selected ? 'selected' : ''
       } disabled:opacity-60 disabled:cursor-not-allowed`}
     >
-      <span className="text-xs font-display uppercase tracking-wide text-[#4a4539]">
+      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
         {label}
       </span>
       {flag ? (
@@ -97,12 +97,12 @@ function TeamOption({
           alt={name}
           width={56}
           height={38}
-          className="object-cover rounded-md w-14 h-9 shadow-sm"
+          className="object-cover rounded-md w-12 h-8 shadow-sm"
         />
       ) : (
-        <div className="w-14 h-9 rounded-md bg-[#f7f3e8] border-2 border-dashed border-[#efe9d8]" />
+        <div className="w-12 h-8 rounded-md bg-slate-100 border border-dashed border-slate-300" />
       )}
-      <span className="font-display text-lg text-[#1a1a1a] text-center leading-tight">
+      <span className="text-sm font-semibold text-slate-900 text-center leading-tight">
         {name}
       </span>
     </button>
@@ -285,24 +285,27 @@ export default function AdminPanel({
       <form action={handleLogout} className="flex justify-end">
         <button
           type="submit"
-          className="text-sm text-[#4a4539] hover:text-[#1a5f2a] transition-colors underline"
+          className="text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors"
         >
           Cerrar sesión de admin
         </button>
       </form>
 
       {/* Player management */}
-      <div className="bg-white rounded-2xl border-2 border-[#1a5f2a] p-6 shadow-[0_4px_0_rgba(0,0,0,0.06)]">
-        <h2 className="font-display text-2xl text-[#1a1a1a] mb-4">Jugadores</h2>
+      <section className="surface p-6 animate-fade-in-up">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-1.5 h-5 rounded-full bg-accent" />
+          <h2 className="font-display text-xl font-bold text-slate-900">Jugadores</h2>
+        </div>
 
-        <form action={handleCreatePlayer} className="space-y-4 mb-6 p-4 bg-[#f7f3e8] rounded-xl">
-          <div className="flex gap-3">
+        <form action={handleCreatePlayer} className="space-y-4 mb-6 p-4 bg-slate-50 rounded-xl border border-slate-100">
+          <div className="flex flex-col sm:flex-row gap-3">
             <input
               name="name"
               value={newPlayerName}
               onChange={(e) => setNewPlayerName(e.target.value)}
               placeholder="Nombre del compañero"
-              className="flex-1 h-12 px-4 bg-white border-2 border-[#efe9d8] rounded-lg focus:border-[#1a5f2a] focus:outline-none"
+              className="flex-1 form-input"
             />
             <input type="hidden" name="imageUrl" value={newPlayerImage || ''} />
             <button
@@ -319,23 +322,23 @@ export default function AdminPanel({
               type="file"
               accept="image/*"
               onChange={(e) => handleImageChange(e, setNewPlayerImage)}
-              className="text-sm text-[#4a4539] file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[#1a5f2a] file:text-white hover:file:bg-[#2d8a3e]"
+              className="text-sm text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-slate-900 file:text-white file:font-semibold hover:file:bg-slate-700"
             />
             {newPlayerImage && (
-              <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-[#ffd700]">
+              <div className="relative w-10 h-10 rounded-full overflow-hidden ring-1 ring-slate-200">
                 <Image src={newPlayerImage} alt="Preview" fill className="object-cover" />
               </div>
             )}
           </div>
         </form>
 
-        <label className="block font-display uppercase tracking-wide text-[#4a4539] mb-2">
+        <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
           Seleccionar jugador
         </label>
         <select
           value={selectedUserId}
           onChange={(e) => selectUser(e.target.value)}
-          className="w-full h-12 px-4 bg-[#f7f3e8] border-2 border-[#efe9d8] rounded-lg focus:border-[#1a5f2a] focus:outline-none text-[#1a1a1a]"
+          className="w-full form-input"
         >
           <option value="">-- Elige un jugador --</option>
           {users.map((u) => (
@@ -346,13 +349,13 @@ export default function AdminPanel({
         </select>
 
         {selectedUser && (
-          <div className="mt-6 pt-6 border-t-2 border-dashed border-[#efe9d8]">
-            <h3 className="font-display uppercase tracking-wide text-[#4a4539] mb-3">
+          <div className="mt-6 pt-6 border-t border-slate-100">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
               Foto del jugador
             </h3>
             <div className="flex items-center gap-4">
               {selectedUser.imageUrl ? (
-                <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-[#1a5f2a]">
+                <div className="relative w-14 h-14 rounded-full overflow-hidden ring-1 ring-slate-200">
                   <Image
                     src={selectedUser.imageUrl}
                     alt={selectedUser.name}
@@ -361,7 +364,7 @@ export default function AdminPanel({
                   />
                 </div>
               ) : (
-                <div className="w-16 h-16 rounded-full bg-[#1a5f2a] flex items-center justify-center text-white font-display text-2xl">
+                <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-display text-xl font-bold">
                   {selectedUser.name.charAt(0).toUpperCase()}
                 </div>
               )}
@@ -383,20 +386,20 @@ export default function AdminPanel({
                   }
                 }}
                 disabled={updatingImage}
-                className="text-sm text-[#4a4539] file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[#1a5f2a] file:text-white hover:file:bg-[#2d8a3e] disabled:opacity-60"
+                className="text-sm text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-slate-900 file:text-white file:font-semibold hover:file:bg-slate-700 disabled:opacity-60"
               />
-              {updatingImage && <span className="text-[#4a4539] text-sm">Subiendo...</span>}
+              {updatingImage && <span className="text-slate-500 text-sm">Subiendo...</span>}
             </div>
           </div>
         )}
-      </div>
+      </section>
 
       {message && (
         <div
           className={`p-4 rounded-xl text-sm ${
             message.includes('Error') || message.includes('incorrecta') || message.includes('existe')
-              ? 'bg-[#d93025]/10 border border-[#d93025]/30 text-[#d93025]'
-              : 'bg-[#1a5f2a]/10 border border-[#1a5f2a]/30 text-[#1a5f2a]'
+              ? 'bg-red-50 border border-red-100 text-danger'
+              : 'bg-accent-light border border-green-100 text-accent-dark'
           }`}
         >
           {message}
@@ -406,10 +409,13 @@ export default function AdminPanel({
       {selectedUser && (
         <>
           {grouped.map(([stage, stageMatches]) => (
-            <div key={stage} className="bg-white rounded-2xl border-2 border-[#efe9d8] p-6 shadow-[0_4px_0_rgba(0,0,0,0.06)]">
-              <h2 className="font-display text-xl text-[#1a5f2a] uppercase tracking-wide mb-4">
-                {STAGE_LABELS[stage] || stage}
-              </h2>
+            <section key={stage} className="surface p-6 animate-fade-in-up">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-1.5 h-5 rounded-full bg-accent" />
+                <h2 className="font-display text-lg font-bold text-slate-900">
+                  {STAGE_LABELS[stage] || stage}
+                </h2>
+              </div>
               <div className="grid gap-4 md:grid-cols-2">
                 {stageMatches.map((match) => {
                   const locked = isLocked(match)
@@ -419,14 +425,14 @@ export default function AdminPanel({
                   return (
                     <div
                       key={match.id}
-                      className={`bg-[#f7f3e8] rounded-xl border-2 border-[#efe9d8] p-4 ${
+                      className={`bg-slate-50 rounded-xl border border-slate-200 p-4 ${
                         locked ? 'opacity-70' : ''
                       }`}
                     >
-                      <div className="flex items-center justify-between text-sm text-[#4a4539] mb-3">
-                        <span className="font-medium">{formatDate(match.utcDate)}</span>
+                      <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
+                        <span>{formatDate(match.utcDate)}</span>
                         {locked && (
-                          <span className="bg-[#d93025] text-white text-xs px-2 py-0.5 rounded-full uppercase tracking-wide">
+                          <span className="bg-danger text-white text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wide">
                             Cerrado
                           </span>
                         )}
@@ -450,8 +456,8 @@ export default function AdminPanel({
                             winner === 'DRAW' ? 'selected' : ''
                           } disabled:opacity-60`}
                         >
-                          <span className="text-xs font-display uppercase text-[#4a4539]">Empate</span>
-                          <span className="text-2xl">⚖️</span>
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Empate</span>
+                          <span className="text-xl">⚖️</span>
                         </button>
 
                         <TeamOption
@@ -468,7 +474,7 @@ export default function AdminPanel({
                         <button
                           type="button"
                           onClick={() => handleDeletePrediction(match.id)}
-                          className="mt-3 w-full text-sm text-[#d93025] hover:text-[#b71c1c] transition-colors underline"
+                          className="mt-3 w-full text-sm font-semibold text-danger hover:text-red-700 transition-colors"
                         >
                           Borrar predicción
                         </button>
@@ -477,14 +483,14 @@ export default function AdminPanel({
                   )
                 })}
               </div>
-            </div>
+            </section>
           ))}
 
-          <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-[#1a5f2a] p-4 flex justify-center z-40 shadow-[0_-4px_12px_rgba(0,0,0,0.08)]">
+          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 flex justify-center z-40 shadow-[0_-4px_12px_rgba(0,0,0,0.04)]">
             <button
               onClick={handleSave}
               disabled={saving}
-              className="btn-primary px-12 py-3 text-xl disabled:opacity-60"
+              className="btn-primary px-10 py-3 text-base disabled:opacity-60"
             >
               {saving ? 'Guardando...' : 'Guardar predicciones'}
             </button>

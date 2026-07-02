@@ -40,21 +40,19 @@ export default function PredictionBracket({
         const isMiss = hasResult && pred.pointsEarned === 0
 
         return (
-          <div className="text-xs text-center">
-            <div className="text-[#4a4539]">
+          <div className="text-xs flex items-center justify-between">
+            <span className="text-slate-500">
               Predicción:{' '}
-              <span className="font-semibold text-[#1a1a1a]">
+              <span className="font-semibold text-slate-900">
                 {predictedWinnerLabel(match, pred.predictedWinner)}
               </span>
-            </div>
+            </span>
             {hasResult && (
-              <div
-                className={`mt-1 font-display uppercase tracking-wide ${
-                  isHit ? 'text-[#1a5f2a]' : isMiss ? 'text-[#d93025]' : 'text-[#4a4539]'
-                }`}
+              <span
+                className={`badge ${isHit ? 'badge-hit' : isMiss ? 'badge-miss' : 'badge-pending'}`}
               >
                 {isHit ? `+${pred.pointsEarned} pt` : 'Falló'}
-              </div>
+              </span>
             )}
           </div>
         )

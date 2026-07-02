@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
-import { Bebas_Neue, Crimson_Pro } from "next/font/google";
+import { Bricolage_Grotesque, Manrope } from "next/font/google";
 import "./globals.css";
 
-const bebasNeue = Bebas_Neue({
-  weight: "400",
+const bricolage = Bricolage_Grotesque({
   variable: "--font-display",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const crimsonPro = Crimson_Pro({
+const manrope = Manrope({
   variable: "--font-body",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -26,9 +27,9 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${bebasNeue.variable} ${crimsonPro.variable} h-full antialiased`}
+      className={`${bricolage.variable} ${manrope.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-body bg-[#f7f3e8] text-[#1a1a1a]">
+      <body className="min-h-full flex flex-col bg-slate-50 text-slate-900 font-body">
         {children}
       </body>
     </html>

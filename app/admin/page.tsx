@@ -38,13 +38,15 @@ export default async function AdminPage() {
   })
 
   return (
-    <div className="min-h-screen bg-[#f7f3e8]">
+    <div className="min-h-screen bg-slate-50">
       <AppHeader isAdmin={isAdmin} />
 
-      <main className="max-w-5xl mx-auto px-4 py-8 pb-28">
-        <div className="text-center mb-8">
-          <h1 className="font-display text-5xl text-[#1a1a1a] mb-2">Administración</h1>
-          <p className="text-[#4a4539] text-lg">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10 pb-28">
+        <div className="mb-8 sm:mb-10">
+          <h1 className="font-display text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
+            Administración
+          </h1>
+          <p className="text-slate-500 mt-2">
             Registra y edita las predicciones de tus compañeros
           </p>
         </div>

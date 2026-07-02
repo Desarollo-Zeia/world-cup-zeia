@@ -42,8 +42,8 @@ function TeamRow({
   const flag = getFlagUrl(team?.code)
 
   return (
-    <div className={`flex items-center justify-between gap-2 py-2 px-3 rounded-lg ${isWinner ? 'bg-[#1a5f2a]/10' : ''}`}>
-      <div className="flex items-center gap-2 min-w-0">
+    <div className={`flex items-center justify-between gap-2 py-2.5 px-3 rounded-lg ${isWinner ? 'bg-accent-light/50' : ''}`}>
+      <div className="flex items-center gap-2.5 min-w-0">
         {flag ? (
           <Image
             src={flag}
@@ -53,14 +53,14 @@ function TeamRow({
             className="rounded-sm object-cover shrink-0 shadow-sm"
           />
         ) : (
-          <div className="w-6 h-4 rounded-sm bg-[#efe9d8] shrink-0" />
+          <div className="w-6 h-4 rounded-sm bg-slate-100 shrink-0" />
         )}
-        <span className={`text-sm font-medium truncate ${isWinner ? 'text-[#1a5f2a] font-semibold' : 'text-[#1a1a1a]'}`}>
+        <span className={`text-sm font-medium truncate ${isWinner ? 'text-accent-dark font-semibold' : 'text-slate-700'}`}>
           {name}
         </span>
       </div>
       {score !== undefined && score !== null && (
-        <span className={`text-sm font-bold tabular-nums shrink-0 ${isWinner ? 'text-[#1a5f2a]' : 'text-[#4a4539]'}`}>
+        <span className={`text-sm font-bold tabular-nums shrink-0 ${isWinner ? 'text-accent-dark' : 'text-slate-500'}`}>
           {score}
         </span>
       )}
@@ -73,9 +73,10 @@ function MatchCard({ match, extra }: { match: MatchWithTeams; extra?: React.Reac
   const awayWinner = match.winner === 'AWAY'
 
   return (
-    <div className="bg-white rounded-xl border-2 border-[#efe9d8] p-3 shadow-[0_3px_0_rgba(0,0,0,0.05)] hover:border-[#1a5f2a] transition-colors">
-      <div className="text-xs font-display uppercase tracking-wide text-[#4a4539] mb-2">
-        {formatDate(match.utcDate)}
+    <div className="surface p-3 hover:border-slate-300 transition-colors">
+      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2 flex items-center justify-between">
+        <span>{formatDate(match.utcDate)}</span>
+        {match.matchNumber && <span>#{match.matchNumber}</span>}
       </div>
       <TeamRow
         team={match.homeTeam}
@@ -89,7 +90,7 @@ function MatchCard({ match, extra }: { match: MatchWithTeams; extra?: React.Reac
         score={match.awayScore}
         isWinner={awayWinner}
       />
-      {extra && <div className="mt-2 pt-2 border-t border-dashed border-[#efe9d8]">{extra}</div>}
+      {extra && <div className="mt-2 pt-2 border-t border-slate-100">{extra}</div>}
     </div>
   )
 }
@@ -116,8 +117,12 @@ function RoundSection({
 
   return (
     <div className="mb-8">
-      <h2 className="font-display text-2xl text-[#1a5f2a] uppercase tracking-wide mb-4">{title}</h2>
-      <div className={`grid ${gridCols} gap-3`}>
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-1.5 h-5 rounded-full bg-accent" />
+        <h2 className="font-display text-xl font-bold text-slate-900 tracking-tight">{title}</h2>
+        <span className="text-xs font-semibold text-slate-400">{matches.length} partidos</span>
+      </div>
+      <div className={`grid ${gridCols} gap-4`}>
         {matches.map((match) => (
           <MatchCard key={match.id} match={match} extra={renderExtra?.(match)} />
         ))}
