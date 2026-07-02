@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String        @id @default(uuid())
+  name        String        @unique
+  predictions Prediction[]
+  createdAt   DateTime      @default(now())
+}
+
+model Team {
+  id          String   @id @default(uuid())
+  fifaId      String   @unique
+  name        String
+  code        String
+  flagUrl     String?
+  homeMatches Match[]  @relation("HomeTeam")
+  awayMatches Match[]  @relation("AwayTeam")
+}
+
+model Match {
+  id             String        @id @default(uuid())
+  fifaMatchId    String        @unique
+  stage          String
+  matchNumber    Int
+  roundOrder     Int
+  utcDate        DateTime
+  localDate      DateTime
+  status         String
+  homeTeamId     String?
+  awayTeamId     String?
+  homeTeam       Team?         @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  awayTeam       Team?         @relation("AwayTeam", fields: [awayTeamId], references: [id])
+  homeScore      Int?
+  awayScore      Int?
+  winner         MatchWinner?
+  placeholderA   String?
+  placeholderB   String?
+  nextMatchSlotA String?
+  nextMatchSlotB String?
+  stadiumName    String?
+  predictions    Prediction[]
+}
+
+model Prediction {
+  id              String       @id @default(uuid())
+  userId          String
+  matchId         String
+  predictedWinner MatchWinner
+  homeScore       Int?
+  awayScore       Int?
+  pointsEarned    Int          @default(0)
+  user            User         @relation(fields: [userId], references: [id])
+  match           Match        @relation(fields: [matchId], references: [id])
+
+  @@unique([userId, matchId])
+}
+
+enum MatchWinner {
+  HOME
+  AWAY
+  DRAW
+}
