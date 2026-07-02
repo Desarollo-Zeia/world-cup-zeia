@@ -25,10 +25,10 @@ export default function AppHeader({ isAdmin = false }: { isAdmin?: boolean }) {
           </div>
           <div className="flex flex-col leading-none">
             <span className="font-display text-xl font-semibold tracking-tight text-slate-900">
-              Mundial Zeia
+              Mundial Oficina
             </span>
             <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-500">
-              Quiniela 2026
+              2026
             </span>
           </div>
         </Link>

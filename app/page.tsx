@@ -54,7 +54,7 @@ export default async function HomePage() {
             Así van las predicciones
           </h1>
           <p className="text-slate-500 mt-2">
-            Tabla de posiciones de tus compañeros · Mundial 2026
+            Tabla de posiciones de los adictos - Mundial 2026
           </p>
         </div>
 

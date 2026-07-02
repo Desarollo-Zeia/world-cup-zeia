@@ -15,7 +15,7 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "Mundial Zeia",
+  title: "Mundial Oficina",
   description: "Adivina los resultados con tus compañeros de trabajo",
 };
 
