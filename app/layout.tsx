@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Manrope } from "next/font/google";
 import "./globals.css";
+import SplashScreen from "@/app/components/SplashScreen";
 
 const bricolage = Bricolage_Grotesque({
   variable: "--font-display",
@@ -30,7 +31,7 @@ export default function RootLayout({
       className={`${bricolage.variable} ${manrope.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-slate-50 text-slate-900 font-body">
-        {children}
+        <SplashScreen>{children}</SplashScreen>
       </body>
     </html>
   );
