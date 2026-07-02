@@ -1,3 +1,6 @@
+'use client'
+
+import { useState, useMemo } from 'react'
 import Image from 'next/image'
 import { getFlagUrl } from '@/app/lib/flags'
 import { Match, Team } from '@prisma/client'
@@ -15,6 +18,15 @@ const STAGE_LABELS: Record<string, string> = {
   THIRD_PLACE: '3er puesto',
   FINAL: 'Final',
 }
+
+const STAGE_ORDER = [
+  'ROUND_OF_32',
+  'ROUND_OF_16',
+  'QUARTER_FINAL',
+  'SEMI_FINAL',
+  'THIRD_PLACE',
+  'FINAL',
+]
 
 function formatDate(date: Date | string): string {
   const d = new Date(date)
@@ -138,49 +150,94 @@ export default function BracketView({
   matches: MatchWithTeams[]
   renderExtra?: (match: MatchWithTeams) => React.ReactNode
 }) {
-  const byStage: Record<string, MatchWithTeams[]> = {
-    ROUND_OF_32: [],
-    ROUND_OF_16: [],
-    QUARTER_FINAL: [],
-    SEMI_FINAL: [],
-    THIRD_PLACE: [],
-    FINAL: [],
-  }
+  const [filter, setFilter] = useState<string>('ALL')
 
-  for (const match of matches) {
-    if (byStage[match.stage]) byStage[match.stage].push(match)
-  }
+  const byStage = useMemo(() => {
+    const map: Record<string, MatchWithTeams[]> = {
+      ROUND_OF_32: [],
+      ROUND_OF_16: [],
+      QUARTER_FINAL: [],
+      SEMI_FINAL: [],
+      THIRD_PLACE: [],
+      FINAL: [],
+    }
+    for (const match of matches) {
+      if (map[match.stage]) map[match.stage].push(match)
+    }
+    return map
+  }, [matches])
 
   return (
     <>
-      <RoundSection
-        title={STAGE_LABELS.ROUND_OF_32}
-        matches={byStage.ROUND_OF_32}
-        columns={4}
-        renderExtra={renderExtra}
-      />
-      <RoundSection
-        title={STAGE_LABELS.ROUND_OF_16}
-        matches={byStage.ROUND_OF_16}
-        columns={4}
-        renderExtra={renderExtra}
-      />
-      <RoundSection
-        title={STAGE_LABELS.QUARTER_FINAL}
-        matches={byStage.QUARTER_FINAL}
-        columns={4}
-        renderExtra={renderExtra}
-      />
-      <RoundSection
-        title={STAGE_LABELS.SEMI_FINAL}
-        matches={byStage.SEMI_FINAL}
-        columns={2}
-        renderExtra={renderExtra}
-      />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <RoundSection title={STAGE_LABELS.FINAL} matches={byStage.FINAL} columns={1} renderExtra={renderExtra} />
-        <RoundSection title={STAGE_LABELS.THIRD_PLACE} matches={byStage.THIRD_PLACE} columns={1} renderExtra={renderExtra} />
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+        <label className="text-sm font-semibold text-slate-500">
+          Filtrar por fase
+        </label>
+        <select
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          className="form-input w-full sm:w-64"
+        >
+          <option value="ALL">Todas las fases</option>
+          {STAGE_ORDER.map((stage) => (
+            <option key={stage} value={stage}>
+              {STAGE_LABELS[stage]}
+            </option>
+          ))}
+        </select>
       </div>
+
+      {filter === 'ALL' && (
+        <>
+          <RoundSection
+            title={STAGE_LABELS.ROUND_OF_32}
+            matches={byStage.ROUND_OF_32}
+            columns={4}
+            renderExtra={renderExtra}
+          />
+          <RoundSection
+            title={STAGE_LABELS.ROUND_OF_16}
+            matches={byStage.ROUND_OF_16}
+            columns={4}
+            renderExtra={renderExtra}
+          />
+          <RoundSection
+            title={STAGE_LABELS.QUARTER_FINAL}
+            matches={byStage.QUARTER_FINAL}
+            columns={4}
+            renderExtra={renderExtra}
+          />
+          <RoundSection
+            title={STAGE_LABELS.SEMI_FINAL}
+            matches={byStage.SEMI_FINAL}
+            columns={2}
+            renderExtra={renderExtra}
+          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <RoundSection title={STAGE_LABELS.FINAL} matches={byStage.FINAL} columns={1} renderExtra={renderExtra} />
+            <RoundSection title={STAGE_LABELS.THIRD_PLACE} matches={byStage.THIRD_PLACE} columns={1} renderExtra={renderExtra} />
+          </div>
+        </>
+      )}
+
+      {filter === 'ROUND_OF_32' && (
+        <RoundSection title={STAGE_LABELS.ROUND_OF_32} matches={byStage.ROUND_OF_32} columns={4} renderExtra={renderExtra} />
+      )}
+      {filter === 'ROUND_OF_16' && (
+        <RoundSection title={STAGE_LABELS.ROUND_OF_16} matches={byStage.ROUND_OF_16} columns={4} renderExtra={renderExtra} />
+      )}
+      {filter === 'QUARTER_FINAL' && (
+        <RoundSection title={STAGE_LABELS.QUARTER_FINAL} matches={byStage.QUARTER_FINAL} columns={4} renderExtra={renderExtra} />
+      )}
+      {filter === 'SEMI_FINAL' && (
+        <RoundSection title={STAGE_LABELS.SEMI_FINAL} matches={byStage.SEMI_FINAL} columns={2} renderExtra={renderExtra} />
+      )}
+      {filter === 'FINAL' && (
+        <RoundSection title={STAGE_LABELS.FINAL} matches={byStage.FINAL} columns={1} renderExtra={renderExtra} />
+      )}
+      {filter === 'THIRD_PLACE' && (
+        <RoundSection title={STAGE_LABELS.THIRD_PLACE} matches={byStage.THIRD_PLACE} columns={1} renderExtra={renderExtra} />
+      )}
     </>
   )
 }
