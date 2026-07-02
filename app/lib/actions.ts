@@ -35,19 +35,41 @@ export async function createPlayer(
   await requireAdmin()
 
   const name = (formData.get('name') as string)?.trim()
+  const imageUrl = (formData.get('imageUrl') as string) || null
+
   if (!name) {
     return { error: 'El nombre es obligatorio' }
   }
 
   try {
     const user = await prisma.user.create({
-      data: { name },
+      data: { name, imageUrl },
     })
     revalidatePath('/')
     revalidatePath('/admin')
     return { success: true, user }
   } catch {
     return { error: 'Ese nombre ya existe' }
+  }
+}
+
+export async function updateUserImage(
+  userId: string,
+  imageUrl: string
+): Promise<{ success: true; user: User } | { error: string }> {
+  await requireAdmin()
+
+  try {
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: { imageUrl: imageUrl || null },
+    })
+    revalidatePath('/')
+    revalidatePath(`/player/${userId}`)
+    revalidatePath('/admin')
+    return { success: true, user }
+  } catch {
+    return { error: 'No se pudo actualizar la foto' }
   }
 }
 

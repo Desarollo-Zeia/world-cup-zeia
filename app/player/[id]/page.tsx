@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation'
+import Image from 'next/image'
 import { syncMatches } from '@/app/lib/sync'
 import { prisma } from '@/app/lib/prisma'
 import AppHeader from '@/app/components/AppHeader'
@@ -46,11 +47,22 @@ export default async function PlayerPage({ params }: PageProps) {
       <AppHeader />
 
       <main className="max-w-6xl mx-auto px-4 py-6 pb-28">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-white mb-1">{user.name}</h1>
-          <p className="text-gray-400 text-sm">
-            {totalPoints} puntos · {winners} aciertos
-          </p>
+        <div className="mb-6 flex items-center gap-4">
+          {user.imageUrl ? (
+            <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-[#22c55e]">
+              <Image src={user.imageUrl} alt={user.name} fill className="object-cover" />
+            </div>
+          ) : (
+            <div className="w-16 h-16 rounded-full bg-[#2a2a2a] flex items-center justify-center text-gray-500 text-xl font-bold">
+              {user.name.charAt(0).toUpperCase()}
+            </div>
+          )}
+          <div>
+            <h1 className="text-2xl font-bold text-white mb-1">{user.name}</h1>
+            <p className="text-gray-400 text-sm">
+              {totalPoints} puntos · {winners} aciertos
+            </p>
+          </div>
         </div>
 
         <div className="mb-6 bg-[#1e1e1e] rounded-2xl border border-[#2a2a2a] p-4">

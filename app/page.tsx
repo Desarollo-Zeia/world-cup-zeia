@@ -22,6 +22,7 @@ export default async function HomePage() {
     .map((u) => ({
       id: u.id,
       name: u.name,
+      imageUrl: u.imageUrl,
       points: u.predictions.reduce((sum, p) => sum + p.pointsEarned, 0),
       winners: u.predictions.filter((p) => p.pointsEarned >= 1).length,
     }))

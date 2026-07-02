@@ -1,10 +1,12 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 
 type RankingItem = {
   id: string
   name: string
+  imageUrl: string | null
   points: number
   winners: number
 }
@@ -19,7 +21,7 @@ export default function RankingTable({ ranking }: { ranking: RankingItem[] }) {
               #
             </th>
             <th className="px-4 py-3 text-xs font-bold text-gray-400 uppercase tracking-wide">
-              Nombre
+              Jugador
             </th>
             <th className="px-4 py-3 text-xs font-bold text-gray-400 uppercase tracking-wide text-right">
               Puntos
@@ -36,9 +38,23 @@ export default function RankingTable({ ranking }: { ranking: RankingItem[] }) {
               <td className="px-4 py-3">
                 <Link
                   href={`/player/${u.id}`}
-                  className="text-white hover:text-[#22c55e] transition-colors font-medium"
+                  className="flex items-center gap-3 text-white hover:text-[#22c55e] transition-colors font-medium"
                 >
-                  {u.name}
+                  {u.imageUrl ? (
+                    <div className="relative w-10 h-10 rounded-full overflow-hidden border border-[#3a3a3a] shrink-0">
+                      <Image
+                        src={u.imageUrl}
+                        alt={u.name}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-[#2a2a2a] flex items-center justify-center text-gray-500 text-xs shrink-0">
+                      {u.name.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                  <span>{u.name}</span>
                 </Link>
               </td>
               <td className="px-4 py-3 text-right">

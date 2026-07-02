@@ -9,6 +9,7 @@ import {
   createPlayer,
   deletePrediction,
   logoutAdminAction,
+  updateUserImage,
 } from '@/app/lib/actions'
 
 type MatchWithTeams = Match & {
@@ -103,8 +104,10 @@ export default function AdminPanel({
 }) {
   const [selectedUserId, setSelectedUserId] = useState('')
   const [newPlayerName, setNewPlayerName] = useState('')
+  const [newPlayerImage, setNewPlayerImage] = useState<string | null>(null)
   const [creating, setCreating] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [updatingImage, setUpdatingImage] = useState(false)
   const [message, setMessage] = useState('')
 
   function buildStateForUser(userId: string) {
@@ -136,6 +139,35 @@ export default function AdminPanel({
     setState(buildStateForUser(userId))
   }
 
+  function fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = () => resolve(reader.result as string)
+      reader.onerror = reject
+    })
+  }
+
+  async function handleImageChange(e: React.ChangeEvent<HTMLInputElement>, setter: (url: string | null) => void) {
+    const file = e.target.files?.[0]
+    if (!file) {
+      setter(null)
+      return
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      setMessage('La imagen no debe superar los 2MB')
+      return
+    }
+
+    try {
+      const base64 = await fileToBase64(file)
+      setter(base64)
+    } catch {
+      setMessage('Error al leer la imagen')
+    }
+  }
+
   function updateWinner(matchId: string, winner: MatchWinner | '') {
     setState((prev) => ({ ...prev, [matchId]: winner }))
   }
@@ -150,6 +182,7 @@ export default function AdminPanel({
       setMessage(result.error)
     } else {
       setNewPlayerName('')
+      setNewPlayerImage(null)
       setMessage('Jugador creado')
       selectUser(result.user.id)
       setTimeout(() => setMessage(''), 3000)
@@ -197,6 +230,23 @@ export default function AdminPanel({
     }
   }
 
+  async function handleUpdateImage(imageUrl: string | null) {
+    if (!selectedUserId) return
+
+    setUpdatingImage(true)
+    setMessage('')
+
+    const result = await updateUserImage(selectedUserId, imageUrl || '')
+
+    setUpdatingImage(false)
+    if ('error' in result) {
+      setMessage(result.error)
+    } else {
+      setMessage('Foto actualizada')
+      setTimeout(() => setMessage(''), 3000)
+    }
+  }
+
   async function handleLogout() {
     await logoutAdminAction()
   }
@@ -227,21 +277,38 @@ export default function AdminPanel({
       <div className="bg-[#1e1e1e] rounded-2xl border border-[#2a2a2a] p-6">
         <h2 className="text-lg font-bold text-white mb-4">Jugadores</h2>
 
-        <form action={handleCreatePlayer} className="flex gap-3 mb-4">
-          <input
-            name="name"
-            value={newPlayerName}
-            onChange={(e) => setNewPlayerName(e.target.value)}
-            placeholder="Nombre del compañero"
-            className="flex-1 h-12 bg-[#121212] text-white px-4 rounded-xl border border-[#3a3a3a] focus:border-[#22c55e] focus:outline-none"
-          />
-          <button
-            type="submit"
-            disabled={creating}
-            className="bg-[#22c55e] text-[#121212] font-bold px-6 rounded-xl hover:bg-[#16a34a] transition-colors disabled:opacity-60"
-          >
-            {creating ? '...' : 'Crear'}
-          </button>
+        <form action={handleCreatePlayer} className="space-y-4 mb-4">
+          <div className="flex gap-3">
+            <input
+              name="name"
+              value={newPlayerName}
+              onChange={(e) => setNewPlayerName(e.target.value)}
+              placeholder="Nombre del compañero"
+              className="flex-1 h-12 bg-[#121212] text-white px-4 rounded-xl border border-[#3a3a3a] focus:border-[#22c55e] focus:outline-none"
+            />
+            <input type="hidden" name="imageUrl" value={newPlayerImage || ''} />
+            <button
+              type="submit"
+              disabled={creating}
+              className="bg-[#22c55e] text-[#121212] font-bold px-6 rounded-xl hover:bg-[#16a34a] transition-colors disabled:opacity-60"
+            >
+              {creating ? '...' : 'Crear'}
+            </button>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => handleImageChange(e, setNewPlayerImage)}
+              className="text-sm text-gray-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-[#2a2a2a] file:text-white hover:file:bg-[#3a3a3a]"
+            />
+            {newPlayerImage && (
+              <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-[#22c55e]">
+                <Image src={newPlayerImage} alt="Preview" fill className="object-cover" />
+              </div>
+            )}
+          </div>
         </form>
 
         <select
@@ -256,6 +323,52 @@ export default function AdminPanel({
             </option>
           ))}
         </select>
+
+        {selectedUserId && (
+          <div className="mt-6 pt-6 border-t border-[#2a2a2a]">
+            <h3 className="text-sm font-bold text-gray-400 mb-3">Foto del jugador</h3>
+            <div className="flex items-center gap-4">
+              {(() => {
+                const selectedUser = users.find((u) => u.id === selectedUserId)
+                return selectedUser?.imageUrl ? (
+                  <div className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-[#22c55e]">
+                    <Image
+                      src={selectedUser.imageUrl}
+                      alt={selectedUser.name}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-14 h-14 rounded-full bg-[#2a2a2a] flex items-center justify-center text-gray-500 text-xs">
+                    Sin foto
+                  </div>
+                )
+              })()}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0]
+                  if (!file) return
+                  if (file.size > 2 * 1024 * 1024) {
+                    setMessage('La imagen no debe superar los 2MB')
+                    return
+                  }
+                  try {
+                    const base64 = await fileToBase64(file)
+                    await handleUpdateImage(base64)
+                  } catch {
+                    setMessage('Error al leer la imagen')
+                  }
+                }}
+                disabled={updatingImage}
+                className="text-sm text-gray-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-[#2a2a2a] file:text-white hover:file:bg-[#3a3a3a] disabled:opacity-60"
+              />
+              {updatingImage && <span className="text-gray-400 text-sm">Subiendo...</span>}
+            </div>
+          </div>
+        )}
       </div>
 
       {message && (
